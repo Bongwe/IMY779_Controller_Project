@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json.Linq;
 
 public class Player_Platformer : MonoBehaviour {
 
@@ -18,9 +19,28 @@ public class Player_Platformer : MonoBehaviour {
 		rigidBody = GetComponent<Rigidbody> ();
 	}
 
-	public void ButtonInput (string input){
+	public void ButtonInput (JToken input){
+		Debug.Log(input["action"]["down"].ToString());
+		
+		if (input["action"]["down"].ToString() == "True")
+		{
 
-		switch (input) {
+		} else if (input["action"]["up"].ToString() == "True")
+		{
+			rigidBody.AddForce(transform.up * jumpForce);
+		}
+		else if (input["action"]["left"].ToString() == "True")
+		{
+			movingLeft = true;
+			movingRight = false;
+		}
+		else if (input["action"]["right"].ToString() == "True")
+		{
+			movingRight = true;
+			movingLeft = false;
+		}
+
+		/*switch (input) {
 		case "right":
 			movingRight = true;
 			break;
@@ -45,7 +65,7 @@ public class Player_Platformer : MonoBehaviour {
 				}
 			}
 			break;
-		}
+		}*/
 	}
 
 	private void FixedUpdate(){

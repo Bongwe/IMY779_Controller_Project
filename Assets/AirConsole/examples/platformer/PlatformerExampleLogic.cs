@@ -46,7 +46,7 @@ public class PlatformerExampleLogic : MonoBehaviour {
 		//When I get a message, I check if it's from any of the devices stored in my device Id dictionary
 		if (players.ContainsKey (from) && data["action"] != null) {
 			//I forward the command to the relevant player script, assigned by device ID
-			players [from].ButtonInput (data["action"].ToString());
+			players [from].ButtonInput (data);
 		}
 	}
 

@@ -3,6 +3,7 @@
 <head>
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
   <script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.7.0.js"></script>
+  <script type="text/javascript" src="swipe-digital.js"></script>
   <script type="text/javascript">
     /* ------------PLEASE READ THIS-----------
     * this script has been copied from https://github.com/AirConsole/airconsole-controls
@@ -274,7 +275,7 @@
     text-align: center;
   }
 
-  #swipe-area {
+  #my-swipe-area {
       position: absolute;
       top: 0px;
       width: 100%;
@@ -297,7 +298,7 @@
       };
 
       // Setting up Swipe area
-      new SwipeAnalog("swipe-area", {
+      /*new SwipeAnalog("swipe-area", {
           // Gets called when the SwipeAnalog is released. If had_directions is false, it was just a tap.
           "onTrigger": function(vector) {
             console.log("swipe vector: ", vector);
@@ -305,7 +306,25 @@
           },
           // (Optional) Minimum distance (px) to swipe until triggering the onTrigger function
           "min_swipe_distance": 30
-      });
+      });*/
+      new SwipeDigital("my-swipe-area", {
+      // Gets called when the amount of pixels swiped has been exceeded
+      // Param is active directions {down: <Boolean>, left: <Boolean>, up: <Boolean>, right: <Boolean>}
+      "onTrigger": function(direction_map) {
+        console.log("direction_map: ", direction_map);
+      },
+      // Gets called when the SwipeDigital is touched.
+      "touchstart": function(event) {},
+      // Gets called when the SwipeDigital is released. If had_directions is false, it was just a tap.
+      "touchend": function(event, had_directions) {
+       console.log("event: ", event);
+       console.log("had_directions: ", had_directions);
+      },
+      // (Optional) Minimum distance (px) to swipe until triggering the onTrigger function
+      "min_swipe_distance": 30,
+      // (Optional) allowed_directions: FOURWAY, EIGHTWAY, HORIZONTAL or VERTICAL
+      "allowed_directions": SwipeDigital.ALLOWED_DIRECTIONS.ALL
+    });
     }
   </script>
  
@@ -313,6 +332,6 @@
 <body onload="window.app = new App()">
   <div id="background"></div>
   <div id="instruction">Swipe Anywhere</div>
-  <div  id="swipe-area"></div>
+  <div id="my-swipe-area"></div>
 </body>
 </html>
