@@ -4,7 +4,9 @@
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
   <script type="text/javascript" src="https://www.airconsole.com/api/airconsole-1.7.0.js"></script>
   <script type="text/javascript" src="swipe-digital.js"></script>
+  <script type="text/javascript" src="touch-area.js"></script>
   <script type="text/javascript">
+
     /* ------------PLEASE READ THIS-----------
     * this script has been copied from https://github.com/AirConsole/airconsole-controls
     * If you'd like to use swiping or other elements of the AirConsole Controls library in your project, we recommend downloading the scripts
@@ -275,13 +277,40 @@
     text-align: center;
   }
 
+  #instruction2 {
+    width: 100%;
+    height: 10%;
+    top: 40%;
+    position: absolute;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+  }
+
+  
   #my-swipe-area {
       position: absolute;
       top: 0px;
-      width: 100%;
+      width: 50%;
       height: 100%;
+      border-color: green;
+      border-style: solid;
+      border-width: thick;
+      max-width: 300px;
   }
-    
+
+ #my-tap-area {
+      position: absolute;
+      top: 0px;
+      width: 50%;
+      height: 100%;
+      border-color: pink;
+      border-style: solid;
+      border-width: thick;
+      max-width: 300px;
+      left: 320px;
+}}
+       
 
   </style>
   
@@ -291,7 +320,7 @@
 
     function App() {
       var me = this;
-      me.airconsole = new AirConsole({"orientation": "portrait", "synchronize_time" : "true"});
+      me.airconsole = new AirConsole({"orientation": "landscape", "synchronize_time" : "true"});
 
       me.airconsole.onMessage = function(from, data) {
         console.log("onMessage", from, data);
@@ -307,33 +336,70 @@
           // (Optional) Minimum distance (px) to swipe until triggering the onTrigger function
           "min_swipe_distance": 30
       });*/
-      new SwipeDigital("my-swipe-area", {
-      // Gets called when the amount of pixels swiped has been exceeded
-      // Param is active directions {down: <Boolean>, left: <Boolean>, up: <Boolean>, right: <Boolean>}
-      "onTrigger": function(direction_map) {
-        console.log("direction_map: ", direction_map);
-        me.airconsole.message(AirConsole.SCREEN, {"action": direction_map});
-         // me.airconsole.message(AirConsole.SCREEN, {"action": "swipe", "vector": vector});
-      },
-      // Gets called when the SwipeDigital is touched.
-      "touchstart": function(event) {},
-      // Gets called when the SwipeDigital is released. If had_directions is false, it was just a tap.
-      "touchend": function(event, had_directions) {
-       console.log("event: ", event);
-       console.log("had_directions: ", had_directions);
-      },
-      // (Optional) Minimum distance (px) to swipe until triggering the onTrigger function
-      "min_swipe_distance": 30,
-      // (Optional) allowed_directions: FOURWAY, EIGHTWAY, HORIZONTAL or VERTICAL
-      "allowed_directions": SwipeDigital.ALLOWED_DIRECTIONS.ALL
-    });
+          new SwipeDigital("my-swipe-area", {
+          // Gets called when the amount of pixels swiped has been exceeded
+          // Param is active directions {down: <Boolean>, left: <Boolean>, up: <Boolean>, right: <Boolean>}
+          "onTrigger": function(direction_map) {
+            console.log("direction_map: ", direction_map);
+            me.airconsole.message(AirConsole.SCREEN, {"action": direction_map});
+             // me.airconsole.message(AirConsole.SCREEN, {"action": "swipe", "vector": vector});
+          },
+          // Gets called when the SwipeDigital is touched.
+          "touchstart": function(event) {},
+          // Gets called when the SwipeDigital is released. If had_directions is false, it was just a tap.
+          "touchend": function(event, had_directions) {
+            console.log("event: ", event);
+            console.log("had_directions: ", had_directions);
+            me.airconsole.message(AirConsole.SCREEN, {"action":
+            {"down":false,
+            "left":false,
+            "right":false,
+            "up":false}});
+          },
+          // (Optional) Minimum distance (px) to swipe until triggering the onTrigger function
+          "min_swipe_distance": 30,
+          // (Optional) allowed_directions: FOURWAY, EIGHTWAY, HORIZONTAL or VERTICAL
+          "allowed_directions": SwipeDigital.ALLOWED_DIRECTIONS.ALL
+        });
+
+
+        new SwipeDigital("my-tap-area", {
+          // Gets called when the amount of pixels swiped has been exceeded
+          // Param is active directions {down: <Boolean>, left: <Boolean>, up: <Boolean>, right: <Boolean>}
+          "onTrigger": function(direction_map) {
+            console.log("direction_map: ", direction_map);
+            me.airconsole.message(AirConsole.SCREEN, {"jump": direction_map});
+          },
+          // Gets called when the SwipeDigital is touched.
+          "touchstart": function(event) {
+
+          },
+          // Gets called when the SwipeDigital is released. If had_directions is false, it was just a tap.
+          "touchend": function(event, had_directions) {
+            //console.log("had_directions: ", had_directions);
+            me.airconsole.message(AirConsole.SCREEN, {"interact": had_directions});
+           
+          },
+          // (Optional) Minimum distance (px) to swipe until triggering the onTrigger function
+          "min_swipe_distance": 30,
+          // (Optional) allowed_directions: FOURWAY, EIGHTWAY, HORIZONTAL or VERTICAL
+          "allowed_directions": SwipeDigital.ALLOWED_DIRECTIONS.ALL
+        });
+          
     }
   </script>
  
 </head>
 <body onload="window.app = new App()">
   <div id="background"></div>
-  <div id="instruction">Swipe Anywhere</div>
-  <div id="my-swipe-area"></div>
+  <!--<div id="instruction">Swipe Anywhere</div>-->
+  <div id="my-swipe-area">
+    <span id="instruction">Swipe and hold left or right</span>
+  </div>
+  <div id="my-tap-area">
+    <div id="instruction">Single tap to interact</div>
+    <div id="instruction2">Double tap to jump</div>
+  </div>
+
 </body>
 </html>

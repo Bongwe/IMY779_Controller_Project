@@ -15,29 +15,62 @@ public class Player_Platformer : MonoBehaviour {
 
 	private bool isInSphere;
 
+	private int counter = 0;
+	private int counter1 = -1;
+	private int counter2 = -1;
+
 	private void Start (){
 		rigidBody = GetComponent<Rigidbody> ();
 	}
 
 	public void ButtonInput (JToken input){
-		Debug.Log(input["action"]["down"].ToString());
-		
-		if (input["action"]["down"].ToString() == "True")
+		Debug.Log(input);
+		if (counter1 == -1)
 		{
+			counter1 = counter;
 
-		} else if (input["action"]["up"].ToString() == "True")
+		} else if (counter2 == -1)
 		{
+			counter2 = counter;
+		}
+		
+		if (input["jump"] != null && input["jump"]["up"].ToString() == "True") {
 			rigidBody.AddForce(transform.up * jumpForce);
-		}
-		else if (input["action"]["left"].ToString() == "True")
+
+		} else if (input["interact"] != null && input["interact"].ToString() == "False")
 		{
-			movingLeft = true;
-			movingRight = false;
+			if (isInSphere)
+			{
+				if (Camera.main.backgroundColor == Color.yellow)
+				{
+					Camera.main.backgroundColor = Color.blue;
+				}
+				else
+				{
+					Camera.main.backgroundColor = Color.yellow;
+				}
+			}
 		}
-		else if (input["action"]["right"].ToString() == "True")
+		else if(input["action"] != null)
 		{
-			movingRight = true;
-			movingLeft = false;
+			Debug.Log(input["action"]["down"].ToString());
+
+			if (input["action"]["left"].ToString() == "True")
+			{
+				movingLeft = true;
+				movingRight = false;
+			}
+			else if (input["action"]["right"].ToString() == "True")
+			{
+				movingRight = true;
+				movingLeft = false;
+			}
+			else
+			{
+				movingRight = false;
+				movingLeft = false;
+			}
+
 		}
 
 		/*switch (input) {
@@ -69,6 +102,12 @@ public class Player_Platformer : MonoBehaviour {
 	}
 
 	private void FixedUpdate(){
+		//Debug.Log(counter++);
+		counter++;
+		if (counter > 1000)
+		{
+			counter = 0;
+		}
 		if (movingLeft && !movingRight) {
 			rigidBody.MovePosition(rigidBody.position + new Vector3 (-playerSpeed, 0, 0)); 
 		} else if (!movingLeft && movingRight) {
